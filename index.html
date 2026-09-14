@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>គណនាអាយុកាលព្រះពុទ្ធសាសនា</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;600;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Kantumruy Pro', Khmer OS Battambang, sans-serif;
+            background-color: #f4f6f9;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            max-width: 600px;
+            width: 100%;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            color: #8b0000;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #8b0000;
+            padding-bottom: 8px;
+        }
+
+        .result-box {
+            position: relative;
+            background-color: #fff9e6;
+            border-left: 4px solid #d4af37;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            overflow: hidden; /* ការពារមិនឱ្យ Logo ហៀរចេញក្រៅ */
+            z-index: 1;
+        }
+
+        /* កូដបន្ថែម Logo ពុទ្ធសាសនាខាងក្រោយ (Background Watermark) */
+        .result-box::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 220px;
+            height: 220px;
+            /* រូប Logo កង់ធម៌ (Dharmachakra) */
+            background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjf_lFTzUsJgWFjSVBakoZbjuZOAWfWTGQWuIwe33oAT5hsETFH99jRzw7Nyw_NJRQ1ndYWJNEF4TzYXvdfAa8PgNAwgxDmBF04SqTCafFurAVbsPiq5a_u6CV-OD1Us28N8wVMR_PVdU7V/s320/13924895_278808939145054_7701993897645705691_n+%25281%2529.jpg');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            opacity: 0.08; /* កម្រិតស្រអាប់ (ដើម្បីឱ្យមើលអក្សរច្បាស់) */
+            z-index: -1;
+        }
+
+        .result-box p {
+            margin-bottom: 12px;
+        }
+
+        .result-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .highlight {
+            color: #8b0000;
+            font-weight: 700;
+        }
+
+        .footer-credit {
+            margin-top: 15px;
+            text-align: right;
+            font-size: 0.85rem;
+            color: #555;
+            font-weight: 600;
+            border-top: 1px dashed #d4af37;
+            padding-top: 10px;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+            h2 {
+                font-size: 1.15rem;
+            }
+            .result-box {
+                font-size: 0.9rem;
+                padding: 12px;
+            }
+            .result-box::before {
+                width: 170px;
+                height: 170px;
+            }
+            .footer-credit {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>គណនាអាយុកាលព្រះពុទ្ធសាសនា</h2>
+
+    <div class="result-box" id="resultOutput">
+        <!-- លទ្ធផល Auto បង្ហាញនៅទីនេះ -->
+    </div>
+</div>
+
+<script>
+    function toKhmerNum(num) {
+        const khmerDigits = ['០', '១', '២', '៣', '៤', '៥', '៦', '៧', '៨', '៩'];
+        return num.toString().replace(/\d/g, x => khmerDigits[x]);
+    }
+
+    const khmerDays = ['អាទិត្យ', 'ចន្ទ', 'អង្គារ', 'ពុធ', 'ព្រហស្បតិ៍', 'សុក្រ', 'សៅរ៍'];
+    const khmerMonths = ['មិគសិរ', 'បុស្ស', 'មាឃ', 'ផល្គុន', 'ចេត្រ', 'ពិសាខ', 'ជេស្ឋ', 'អាសាឍ', 'ស្រាពណ៍', 'ភទ្របទ', 'អស្សុជ', 'កត្តិក'];
+
+    function calculateAutoBuddhistEra() {
+        // កាលបរិច្ឆេទយោង (Base Date): ថ្ងៃចន្ទ ទី១៤ ខែកញ្ញា ឆ្នាំ២០២៦ = ថ្ងៃចន្ទ ៣កើត ខែភទ្របទ
+        const baseDate = new Date(2026, 8, 14); 
+        const today = new Date(); 
+
+        // ១. គណនាគម្លាតចំនួនថ្ងៃ
+        const diffTime = today - baseDate;
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        const addedDays = diffDays > 0 ? diffDays : 0;
+
+        // ២. អតីតកាល (២៥៦៩ ឆ្នាំ ៤ ខែ ១៦ ថ្ងៃ + ថ្ងៃកើនឡើង Auto)
+        let pastDaysTotal = (2569 * 360) + (4 * 30) + 16 + addedDays;
+        let years = Math.floor(pastDaysTotal / 360);
+        let months = Math.floor((pastDaysTotal % 360) / 30);
+        let days = pastDaysTotal % 30;
+
+        // ៣. អនាគតកាល (២៤៣០ ឆ្នាំ ៨ ខែ ១២ ថ្ងៃ - ថ្ងៃកើនឡើង Auto)
+        let futureDaysTotal = (2430 * 360) + (8 * 30) + 12 - addedDays;
+        let remYears = Math.floor(futureDaysTotal / 360);
+        let remMonths = Math.floor((futureDaysTotal % 360) / 30);
+        let remDays = futureDaysTotal % 30;
+
+        // ៤. គណនាថ្ងៃចន្ទគតិខ្មែរបច្ចុប្បន្ន (ចាប់ផ្តើមពី ៣កើត ខែភទ្របទ)
+        let dayOfWeek = khmerDays[today.getDay()];
+        
+        let lunarDayIndex = (3 + addedDays) % 30; 
+        if (lunarDayIndex === 0) lunarDayIndex = 30;
+
+        let lunarPhase = "";
+        let lunarNum = 0;
+        if (lunarDayIndex <= 15) {
+            lunarPhase = "កើត";
+            lunarNum = lunarDayIndex;
+        } else {
+            lunarPhase = "រោច";
+            lunarNum = lunarDayIndex - 15;
+        }
+
+        let monthOffset = Math.floor((3 + addedDays - 1) / 30);
+        let currentKhmerMonth = khmerMonths[(9 + monthOffset) % 12];
+
+        let currentDateString = `ថ្ងៃ${dayOfWeek} ${toKhmerNum(lunarNum)}${lunarPhase} ខែ${currentKhmerMonth}`;
+
+        // ៥. បង្ហាញអត្ថបទលើអេក្រង់
+        let html = `
+            <p><strong>អតីតកាលកន្លង៖</strong><br>
+            ១. ឆ្នាំកន្លង <span class="highlight">${toKhmerNum(years)} ឆ្នាំ</span><br>
+            ២. ខែកន្លង <span class="highlight">${toKhmerNum(months)} ខែ</span><br>
+            ៣. ថ្ងៃកន្លង <span class="highlight">${toKhmerNum(days)} ថ្ងៃ</span></p>
+
+            <p><strong>បច្ចុប្បន្នកាល៖</strong> បច្ចុប្បន្នកាលឥឡូវនេះ នៅក្នុង<span class="highlight">ឆ្នាំមមី អដ្ឋស័ក ព.ស. ២៥៧០ ក្នុងវស្សានរដូវ ${currentDateString}</span> ថ្ងៃខែឆ្នាំនេះ លោកកំណត់ទុកជាបច្ចុប្បន្នកាល</p>
+
+            <p><strong>អនាគតេ កាល៖</strong> ឯអាយុកាលនៃព្រះពុទ្ធសាសនានៅសល់ខាងមុខទៀតគឺ 
+            <span class="highlight">${toKhmerNum(remYears)} ឆ្នាំ</span> 
+            <span class="highlight">${toKhmerNum(remMonths)} ខែ</span> 
+            <span class="highlight">${toKhmerNum(remDays)} ថ្ងៃ</span> 
+            បូករួមសិរីទាំងបីកាលគឺអតីត អនាគត បច្ចុប្បន្ន មុនក្រោយបញ្ចូលគ្នា ត្រូវជាអាយុកាលនៃព្រះពុទ្ធសាសនាគ្រប់ ៥.០០០ ព្រះវស្សា ដោយបរិបូរណ៍ហោង ៕</p>
+
+            <div class="footer-credit">
+                គណនានិងរៀបចំដោយ៖ ព្រះភិក្ខុ ថិរធម្មោ អ៊ីង​ បុល
+            </div>
+        `;
+
+        document.getElementById('resultOutput').innerHTML = html;
+    }
+
+    window.onload = calculateAutoBuddhistEra;
+</script>
+
+</body>
+</html>
